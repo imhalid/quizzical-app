@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+// https://opentdb.com/api.php?amount=10&category=31&difficulty=easy&type=multiple
 
-function App() {
+//import axios from "axios";
+import { useEffect, useState } from "react";
+import Questions from "./componenets/Questions";
+
+const App = () => {
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const response = await fetch(
+      "https://opentdb.com/api.php?amount=10&category=31&difficulty=easy&type=multiple"
+    );
+    const data = await response.json();
+
+    const transformedData = data.results.map((quest) => {
+      return {
+        quest: quest.question,
+        answers: [quest.correct_answer, ...quest.incorrect_answers],
+        correct: quest.correct_answer,
+      };
+    });
+    setQuestions(transformedData);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log(questions);
+  /*
+  useEffect(() => {
+    axios
+      .get(
+        "https://opentdb.com/api.php?amount=5&category=18&difficulty=easy&type=multiple"
+      )
+      .then((res) => {
+        setQuestions(
+          res.data.results.map((item) => ({
+            question: item.question,
+            options: shuffle([...item.incorrect_answers, item.correct_answer]),
+            answer: item.correct_answer,
+          }))
+        );
+      })
+      .catch((err) => console.error(err));
+  }, []);
+*/
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      test
+      <button onClick={fetchData}>test</button>
+      <Questions quests={questions} />
     </div>
   );
-}
+};
 
 export default App;
