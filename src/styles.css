@@ -1,0 +1,123 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+* {
+  box-sizing: border-box;
+  font-family: "Roboto Mono", monospace;
+}
+.main {
+  margin: 50px;
+}
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  background-color: lightcyan;
+  background-image: url("/images/zap.png"), url("/images/pow.png");
+  background-repeat: no-repeat;
+  background-size: 150px 150px;
+  background-color: lightcyan;
+  background-position: left bottom, right top;
+}
+
+.start-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  flex-flow: row wrap;
+  margin-top: 100px;
+}
+.quizEl {
+  margin-top: 70px;
+  border-bottom: 0.8px solid #dbdef0;
+}
+
+.choiceEl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #dbdef0;
+}
+
+.description {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+.startBtn {
+  width: 193px;
+  height: 52px;
+  left: 179px;
+  top: 314px;
+  background: #4d5b9e;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 12px;
+  text-align: center;
+  letter-spacing: 1.2px;
+  color: #f5f7fb;
+}
+
+.question {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #293264;
+}
+
+.choice {
+  width: auto;
+  min-width: 75px;
+  height: 25px;
+  background: transparent;
+  border: 1px solid #4d5b9e;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: 0em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: row nowrap;
+  padding: 15px 15px;
+}
+
+.play-again-btn {
+  background: #4d5b9e;
+  border-radius: 10px;
+  width: 104px;
+  height: 30px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 12px;
+  text-align: center;
+  color: #f5f7fb;
+}
+.footerEl {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+.selected {
+  background-color: #d6dbf5;
+}
+
+.transparent {
+  background-color: transparent;
+}
+.correct {
+  background-color: #94d7a2;
+}
+.incorrect {
+  background-color: #f8bcbc;
+}
