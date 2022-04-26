@@ -1,146 +1,72 @@
-import "./styles.css";
-import { nanoid } from "nanoid";
-import React from "react";
-import Start from "./componenets/Start";
-import Quiz from "./componenets/Quiz";
-import Footer from "./componenets/Footer";
+import { useState, useEffect } from "react";
 
-export default function App() {
-  const [startGame, setStartGame] = React.useState();
-  const [quiz, setQuiz] = React.useState([]);
-  const [isFinished, setIsFinished] = React.useState(false);
-  const [checking, setChecking] = React.useState();
-  const [button, setButton] = React.useState();
-  const [score, setScore] = React.useState();
+function App() {
+  const url = "https://opentdb.com/api.php?amount=10&category=31&type=boolean";
 
-  // const [isSelected, setIsSelected] = React.useState(false);
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  React.useEffect(() => {
-    fetch(
-      "https://opentdb.com/api.php?amount=5&category=29&difficulty=easy&type=multiple"
-    )
-      .then((resp) => resp.json())
-      .then((data) => {
-        const quizArray = [];
-        data.results.map((item) => {
-          const question = item.question;
-          const correctAnswer = {
-            answer: item.correct_answer,
-            isSelected: false,
-            isCorrect: true,
-            id: nanoid(),
-          };
+  const fetchQuestions = async () => {
+    setIsLoading(true);
+    const response = await fetch(url);
+    const data = await response.json();
+    setQuestions(data.results);
+    setIsLoading(false);
+  };
 
-          const incorrectAnswers = item.incorrect_answers.map((item) => {
-            return {
-              answer: item,
-              isSelected: false,
-              isCorrect: false,
-              id: nanoid(),
-            };
-          });
-          const allAnswers = incorrectAnswers.concat(correctAnswer);
-          // console.log(allAnswers);
-          // const quizArray = []]
+  const nextQuestion = () => {
+    const nextQuestion = currentQuestion + 1;
 
-          quizArray.push({
-            ...item,
-            answers: allAnswers,
-          });
-          return quizArray;
-        });
-        // console.log(quizArray);
-        setQuiz(quizArray);
-      });
+    if (nextQuestion === questions.length) {
+      setIsGameOver(true);
+    } else {
+      setCurrentQuestion(nextQuestion);
+    }
+  };
+
+  const handleAnswer = (answer) => {
+    if (answer === questions[currentQuestion].correct_answer) {
+      setScore(score + 1);
+    }
+
+    nextQuestion();
+  };
+
+  useEffect(() => {
+    fetchQuestions();
   }, []);
 
-  const allQuizData = quiz.map((item) => {
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isGameOver) {
     return (
-      <Quiz
-        key={nanoid()}
-        question={item.question}
-        answers={item.answers}
-        results={finishGame}
-        select={select}
-        id={nanoid()}
-
-        // select={select)
-        // checkAnswers={checkAnswers}
-      />
+      <div className="App">
+        <h1>Game Over</h1>
+        <p>Your score is {score}</p>
+        <button onClick={fetchQuestions}>Play Again</button>
+      </div>
     );
-  });
-  // console.log(allQuizData);
-  function generateQuiz() {
-    setButton("Check Score");
-    setScore("Score");
-    setChecking(false);
-    setIsFinished(false);
-    setQuiz(allQuizData);
   }
 
-  function select(id) {
-    const answersArray = quiz.map((item) => item.answers);
-    console.log(answersArray);
-    answersArray.map((item) => {
-      console.log(item);
+  const question = questions[currentQuestion];
 
-      // newArray.map((item) => {
-      //   console.log(item);
-
-      return item.id === id ? { ...item, isSelected: !item.isSelected } : item;
-    });
-    console.log("clicked");
-  }
-
-  function start() {
-    setStartGame((prevStartGame) => {
-      if (!startGame) {
-        setStartGame(true);
-        setScore("Score: ");
-        setButton("Check Score");
-        // generateQuiz();
-      } else {
-      }
-    });
-  }
-
-  function checkAnswers() {
-    if (isFinished) {
-      generateQuiz();
-    } else {
-      setChecking(true);
-      console.log("click");
-
-      finishGame();
-    }
-  }
-
-  function finishGame() {
-    let results = 0;
-    quiz.map((item) => {
-      item.answers.map((answer) => {
-        if (answer.isSelected && answer.isCorrect) {
-          results++;
-        }
-      });
-    });
-    setIsFinished(true);
-    setScore(`You scored ${results}/5 answers correct`);
-    setButton("Play Again");
+  if (!question) {
+    return <p>Loading...</p>;
   }
 
   return (
-    <main>
-      <div>
-        {!startGame ? (
-          <Start start={start} />
-        ) : (
-          <div className="quizEl">
-            {allQuizData}
-            <Footer score={score} button={button} checkAnswers={checkAnswers} />
-          </div>
-        )}
-      </div>
-    </main>
+    <div className="App">
+      <h1>React Quiz</h1>
+      <p>Score: {score}</p>
+      <p>{question.question}</p>
+      <button onClick={() => handleAnswer("True")}>True</button>
+      <button onClick={() => handleAnswer("False")}>False</button>
+    </div>
   );
 }
+export default App;
